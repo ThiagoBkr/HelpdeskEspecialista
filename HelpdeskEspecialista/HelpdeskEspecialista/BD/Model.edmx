@@ -1,0 +1,323 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="BDModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Chamado">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Descricao" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="ProblemaId" Type="int" />
+          <Property Name="NumPatrimonioPC" Type="varchar" MaxLength="80" />
+          <Property Name="DataInclusao" Type="datetime" />
+          <Property Name="DataConclusao" Type="datetime" />
+          <Property Name="Solucao" Type="varchar" MaxLength="200" />
+        </EntityType>
+        <EntityType Name="Problema">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Descricao" Type="varchar" MaxLength="200" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProblemaSintoma">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProblemaId" Type="int" />
+          <Property Name="SintomaId" Type="int" />
+        </EntityType>
+        <EntityType Name="Sintoma">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Descricao" Type="varchar" MaxLength="200" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SintomaLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProblemaSintomaId" Type="int" />
+          <Property Name="SeUtil" Type="smallint" />
+        </EntityType>
+        <Association Name="fk_ChamadoXProblema">
+          <End Role="Problema" Type="Self.Problema" Multiplicity="0..1" />
+          <End Role="Chamado" Type="Self.Chamado" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Problema">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Chamado">
+              <PropertyRef Name="ProblemaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_ProblemaSintomaXProblema">
+          <End Role="Problema" Type="Self.Problema" Multiplicity="0..1" />
+          <End Role="ProblemaSintoma" Type="Self.ProblemaSintoma" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Problema">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProblemaSintoma">
+              <PropertyRef Name="ProblemaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_ProblemaSintomaXSintoma">
+          <End Role="Sintoma" Type="Self.Sintoma" Multiplicity="0..1" />
+          <End Role="ProblemaSintoma" Type="Self.ProblemaSintoma" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sintoma">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProblemaSintoma">
+              <PropertyRef Name="SintomaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_SintomaLogXProblemaSintoma">
+          <End Role="ProblemaSintoma" Type="Self.ProblemaSintoma" Multiplicity="0..1" />
+          <End Role="SintomaLog" Type="Self.SintomaLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProblemaSintoma">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SintomaLog">
+              <PropertyRef Name="ProblemaSintomaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BDModelStoreContainer">
+          <EntitySet Name="Chamado" EntityType="Self.Chamado" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Problema" EntityType="Self.Problema" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProblemaSintoma" EntityType="Self.ProblemaSintoma" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Sintoma" EntityType="Self.Sintoma" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SintomaLog" EntityType="Self.SintomaLog" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="fk_ChamadoXProblema" Association="Self.fk_ChamadoXProblema">
+            <End Role="Problema" EntitySet="Problema" />
+            <End Role="Chamado" EntitySet="Chamado" />
+          </AssociationSet>
+          <AssociationSet Name="fk_ProblemaSintomaXProblema" Association="Self.fk_ProblemaSintomaXProblema">
+            <End Role="Problema" EntitySet="Problema" />
+            <End Role="ProblemaSintoma" EntitySet="ProblemaSintoma" />
+          </AssociationSet>
+          <AssociationSet Name="fk_ProblemaSintomaXSintoma" Association="Self.fk_ProblemaSintomaXSintoma">
+            <End Role="Sintoma" EntitySet="Sintoma" />
+            <End Role="ProblemaSintoma" EntitySet="ProblemaSintoma" />
+          </AssociationSet>
+          <AssociationSet Name="fk_SintomaLogXProblemaSintoma" Association="Self.fk_SintomaLogXProblemaSintoma">
+            <End Role="ProblemaSintoma" EntitySet="ProblemaSintoma" />
+            <End Role="SintomaLog" EntitySet="SintomaLog" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="BDModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Chamado">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Descricao" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ProblemaId" Type="Int32" />
+          <Property Name="NumPatrimonioPC" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="DataInclusao" Type="DateTime" Precision="3" />
+          <Property Name="DataConclusao" Type="DateTime" Precision="3" />
+          <Property Name="Solucao" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Problema" Relationship="Self.fk_ChamadoXProblema" FromRole="Chamado" ToRole="Problema" />
+        </EntityType>
+        <EntityType Name="Problema">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Descricao" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Chamado" Relationship="Self.fk_ChamadoXProblema" FromRole="Problema" ToRole="Chamado" />
+          <NavigationProperty Name="ProblemaSintoma" Relationship="Self.fk_ProblemaSintomaXProblema" FromRole="Problema" ToRole="ProblemaSintoma" />
+        </EntityType>
+        <EntityType Name="ProblemaSintoma">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProblemaId" Type="Int32" />
+          <Property Name="SintomaId" Type="Int32" />
+          <NavigationProperty Name="Problema" Relationship="Self.fk_ProblemaSintomaXProblema" FromRole="ProblemaSintoma" ToRole="Problema" />
+          <NavigationProperty Name="Sintoma" Relationship="Self.fk_ProblemaSintomaXSintoma" FromRole="ProblemaSintoma" ToRole="Sintoma" />
+          <NavigationProperty Name="SintomaLog" Relationship="Self.fk_SintomaLogXProblemaSintoma" FromRole="ProblemaSintoma" ToRole="SintomaLog" />
+        </EntityType>
+        <EntityType Name="Sintoma">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Descricao" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="ProblemaSintoma" Relationship="Self.fk_ProblemaSintomaXSintoma" FromRole="Sintoma" ToRole="ProblemaSintoma" />
+        </EntityType>
+        <EntityType Name="SintomaLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProblemaSintomaId" Type="Int32" />
+          <Property Name="SeUtil" Type="Int16" />
+          <NavigationProperty Name="ProblemaSintoma" Relationship="Self.fk_SintomaLogXProblemaSintoma" FromRole="SintomaLog" ToRole="ProblemaSintoma" />
+        </EntityType>
+        <Association Name="fk_ChamadoXProblema">
+          <End Role="Problema" Type="Self.Problema" Multiplicity="0..1" />
+          <End Role="Chamado" Type="Self.Chamado" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Problema">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Chamado">
+              <PropertyRef Name="ProblemaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_ProblemaSintomaXProblema">
+          <End Role="Problema" Type="Self.Problema" Multiplicity="0..1" />
+          <End Role="ProblemaSintoma" Type="Self.ProblemaSintoma" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Problema">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProblemaSintoma">
+              <PropertyRef Name="ProblemaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_ProblemaSintomaXSintoma">
+          <End Role="Sintoma" Type="Self.Sintoma" Multiplicity="0..1" />
+          <End Role="ProblemaSintoma" Type="Self.ProblemaSintoma" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sintoma">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ProblemaSintoma">
+              <PropertyRef Name="SintomaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_SintomaLogXProblemaSintoma">
+          <End Role="ProblemaSintoma" Type="Self.ProblemaSintoma" Multiplicity="0..1" />
+          <End Role="SintomaLog" Type="Self.SintomaLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProblemaSintoma">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SintomaLog">
+              <PropertyRef Name="ProblemaSintomaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BDEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Chamado" EntityType="Self.Chamado" />
+          <EntitySet Name="Problema" EntityType="Self.Problema" />
+          <EntitySet Name="ProblemaSintoma" EntityType="Self.ProblemaSintoma" />
+          <EntitySet Name="Sintoma" EntityType="Self.Sintoma" />
+          <EntitySet Name="SintomaLog" EntityType="Self.SintomaLog" />
+          <AssociationSet Name="fk_ChamadoXProblema" Association="Self.fk_ChamadoXProblema">
+            <End Role="Problema" EntitySet="Problema" />
+            <End Role="Chamado" EntitySet="Chamado" />
+          </AssociationSet>
+          <AssociationSet Name="fk_ProblemaSintomaXProblema" Association="Self.fk_ProblemaSintomaXProblema">
+            <End Role="Problema" EntitySet="Problema" />
+            <End Role="ProblemaSintoma" EntitySet="ProblemaSintoma" />
+          </AssociationSet>
+          <AssociationSet Name="fk_ProblemaSintomaXSintoma" Association="Self.fk_ProblemaSintomaXSintoma">
+            <End Role="Sintoma" EntitySet="Sintoma" />
+            <End Role="ProblemaSintoma" EntitySet="ProblemaSintoma" />
+          </AssociationSet>
+          <AssociationSet Name="fk_SintomaLogXProblemaSintoma" Association="Self.fk_SintomaLogXProblemaSintoma">
+            <End Role="ProblemaSintoma" EntitySet="ProblemaSintoma" />
+            <End Role="SintomaLog" EntitySet="SintomaLog" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="BDModelStoreContainer" CdmEntityContainer="BDEntities">
+          <EntitySetMapping Name="Chamado">
+            <EntityTypeMapping TypeName="BDModel.Chamado">
+              <MappingFragment StoreEntitySet="Chamado">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Descricao" ColumnName="Descricao" />
+                <ScalarProperty Name="ProblemaId" ColumnName="ProblemaId" />
+                <ScalarProperty Name="NumPatrimonioPC" ColumnName="NumPatrimonioPC" />
+                <ScalarProperty Name="DataInclusao" ColumnName="DataInclusao" />
+                <ScalarProperty Name="DataConclusao" ColumnName="DataConclusao" />
+                <ScalarProperty Name="Solucao" ColumnName="Solucao" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Problema">
+            <EntityTypeMapping TypeName="BDModel.Problema">
+              <MappingFragment StoreEntitySet="Problema">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Descricao" ColumnName="Descricao" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProblemaSintoma">
+            <EntityTypeMapping TypeName="BDModel.ProblemaSintoma">
+              <MappingFragment StoreEntitySet="ProblemaSintoma">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ProblemaId" ColumnName="ProblemaId" />
+                <ScalarProperty Name="SintomaId" ColumnName="SintomaId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sintoma">
+            <EntityTypeMapping TypeName="BDModel.Sintoma">
+              <MappingFragment StoreEntitySet="Sintoma">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Descricao" ColumnName="Descricao" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SintomaLog">
+            <EntityTypeMapping TypeName="BDModel.SintomaLog">
+              <MappingFragment StoreEntitySet="SintomaLog">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ProblemaSintomaId" ColumnName="ProblemaSintomaId" />
+                <ScalarProperty Name="SeUtil" ColumnName="SeUtil" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
